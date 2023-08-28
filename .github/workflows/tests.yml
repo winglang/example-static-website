@@ -1,0 +1,63 @@
+name: Wing SDK Tests
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+env:
+  AWS_REGION : "us-east-1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Simulator
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install winglang globally
+        run: npm install -g winglang
+      - name: Execute wing tests
+        run: wing test --debug main.w
+
+  test-tf-aws:
+    runs-on: ubuntu-latest
+    name: (AWS)
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install winglang globally
+        run: npm install -g winglang
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: gh-actions-winglang-static-website
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Execute wing test
+        env:
+          TF_LOG: info
+          TF_LOG_PATH: ${{ runner.workspace }}/terraform.log
+        run: wing test --debug -t tf-aws main.w
+      - name: Output Terraform log
+        if: failure()
+        run: cat ${{ runner.workspace }}/terraform.log
