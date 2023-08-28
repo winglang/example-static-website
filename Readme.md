@@ -26,4 +26,3 @@ Get the URL from the Website and open it in the browser.
 ```
 wing test --debug  main.w
 ```
-# example-static-website
