@@ -11,7 +11,7 @@ permissions:
   pull-requests: write # required for posting comments to pull requests
 
 env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_REGION: "us-east-1"
   TF_BACKEND_BUCKET: ${{ secrets.TF_BACKEND_BUCKET }}
   TF_BACKEND_BUCKET_REGION: ${{ secrets.AWS_REGION }}
 
