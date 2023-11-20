@@ -6,7 +6,7 @@ This is a [Static Website](https://www.winglang.io/docs/standard-library/cloud/w
 
 ## Prerequisite
 
-Please make sure to use a current and working setup of the [wing cli](https://docs.winglang.io/getting-started/installation)
+Please make sure to use a current and working setup of the [wing cli](https://www.winglang.io/docs/start-here/installation)
 
 ## Usage
 
